@@ -1,5 +1,7 @@
-
 import os
+import markdown
+import bleach
+
 from flask import Flask, render_template, request
 from dotenv import load_dotenv
 from google import genai
@@ -41,6 +43,8 @@ def gerar_relatorio():
     Gere um relatório em português brasileiro sobre Engenharia de Software.
     Adapte o relatório ao perfil do usuário.
     Utilize somente as informações fornecidas, sem inventar dados.
+    Organize o conteúdo usando títulos, subtítulos, listas e negrito em Markdown.
+    Não utilize barras invertidas para escapar os símbolos de formatação.
 
     Perfil: {perfil}
     Dados do projeto: {dados}
@@ -58,13 +62,39 @@ def gerar_relatorio():
         # Obtém o texto gerado pela IA
         relatorio = resposta.text or "Nenhum relatório foi gerado."
 
-        # Exibe o relatório na página
-        return f"<h1>Relatório gerado</h1><pre>{relatorio}</pre><a href='/'>Voltar</a>"
+        # Corrige marcadores Markdown com barras invertidas
+        relatorio = (
+            relatorio
+            .replace(r"\#", "#")
+            .replace(r"\*", "*")
+            .replace(r"\-", "-")
+        )
+
+        # Converte Markdown em HTML
+        html_relatorio = markdown.markdown(
+            relatorio,
+            extensions=["extra"]
+        )
+
+        # Permite apenas elementos HTML seguros
+        html_relatorio = bleach.clean(
+            html_relatorio,
+            tags=[
+                "h1", "h2", "h3", "h4",
+                "p", "strong", "em", "ul", "ol", "li",
+                "blockquote", "pre", "code", "hr"
+            ],
+            attributes={},
+            strip=True
+        )
+
+        # Exibe o relatório formatado na página
+        return render_template("resultado.html", relatorio=html_relatorio)
 
     except Exception:
-        # Registra o erro no terminal para facilitar a correção
-        app.logger.exception("Erro ao gerar relatório")
-        return "Erro ao gerar o relatório. Verifique a API e a conexão.", 500
+      # Registra o erro no terminal
+      app.logger.exception("Erro ao gerar relatório")
+      return ("Erro ao gerar o relatório. Verifique a API e a conexão.", 500)
 
 
 # Inicia o servidor local
