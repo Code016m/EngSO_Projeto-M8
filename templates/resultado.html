@@ -1,32 +1,38 @@
 <!doctype html>
 <html lang="pt-BR">
   <head>
+    <!-- Define a codificação de caracteres -->
     <meta charset="UTF-8" />
+
+    <!-- Adapta a página para telas menores -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <!-- Título da página -->
+    <!-- Define o título da página -->
     <title>Relatório gerado | Módulo 8</title>
 
-    <!-- Carrega o CSS do projeto -->
+    <!-- Carrega os estilos compartilhados do projeto -->
     <link
       rel="stylesheet"
       href="{{ url_for('static', filename='style.css') }}"
     />
   </head>
   <body>
+    <!-- Área principal do resultado -->
     <main class="container">
-      <!-- Cabeçalho da página -->
+      <!-- Cabeçalho da página de resultado -->
       <header class="report-header">
         <p class="eyebrow">MÓDULO 8</p>
+
         <h1>Relatório gerado</h1>
+
         <p>Relatório criado com auxílio da inteligência artificial.</p>
       </header>
 
-      <!-- Apresenta o conteúdo formatado -->
+      <!-- Apresenta o relatório já convertido e sanitizado -->
       <article class="report-content">{{ relatorio | safe }}</article>
 
-      <!-- Volta para o formulário -->
-      <a class="button-link" href="/">Gerar outro relatório</a>
+      <!-- Permite retornar ao formulário para gerar outro relatório -->
+      <a class="button-link" href="/"> Gerar outro relatório </a>
     </main>
   </body>
 </html>

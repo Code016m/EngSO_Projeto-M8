@@ -1,98 +1,87 @@
 <!doctype html>
 <html lang="pt-BR">
   <head>
+    <!-- Define a codificação de caracteres -->
     <meta charset="UTF-8" />
+
+    <!-- Adapta a página para celulares e telas menores -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Módulo 8 | Relatórios Inteligentes</title>
+
+    <!-- Define o título exibido na aba do navegador -->
+    <title>Módulo 8 | Geração de Relatórios</title>
+
+    <!-- Carrega o arquivo de estilos do projeto -->
     <link
       rel="stylesheet"
       href="{{ url_for('static', filename='style.css') }}"
     />
   </head>
   <body>
-    <header class="topbar">
-      <div class="brand">
-        <div class="brand-icon">M8</div>
-        <div>
-          <h1>Relatórios Inteligentes</h1>
-          <p>Módulo de Relatórios</p>
-        </div>
-      </div>
-      <span class="status">Assistente de projetos</span>
-    </header>
-
+    <!-- Área principal da página -->
     <main class="container">
-      <section class="intro">
-        <span class="eyebrow">INTELIGÊNCIA ARTIFICIAL APLICADA</span>
-        <h2>Transforme dados em conhecimento.</h2>
-        <p>
-          Gere relatórios personalizados sobre seu projeto, considerando o seu
-          perfil e o objetivo da análise.
-        </p>
-      </section>
+      <!-- Cabeçalho do sistema -->
+      <header>
+        <p class="eyebrow">MÓDULO 8</p>
 
-      <section class="panel">
-        <div class="panel-heading">
-          <div>
-            <h3>Configurar relatório</h3>
-            <p>Preencha os dados abaixo para começar.</p>
-          </div>
-          <span class="step-label">01 / GERAÇÃO</span>
+        <h1>Assistente de Relatórios</h1>
+
+        <p>
+          Gere relatórios de Engenharia de Software com auxílio da inteligência
+          artificial.
+        </p>
+      </header>
+
+      <!-- Exibe uma mensagem caso algum campo esteja vazio -->
+      {% if erro %}
+      <p class="error-message" role="alert">{{ erro }}</p>
+      {% endif %}
+
+      <!-- Formulário enviado para a rota /gerar -->
+      <form method="POST" action="/gerar">
+        <!-- Seleção do perfil do usuário -->
+        <div class="form-group">
+          <label for="perfil">Perfil do usuário</label>
+
+          <select id="perfil" name="perfil" required>
+            <option value="">Selecione seu perfil</option>
+
+            <option value="Aluno / Desenvolvedor">Aluno / Desenvolvedor</option>
+
+            <option value="Professor / PO">Professor / PO</option>
+
+            <option value="Coordenador / Gestor do Projeto">
+              Coordenador / Gestor do Projeto
+            </option>
+          </select>
         </div>
 
-        <form method="POST" action="/gerar">
-          <div class="field">
-            <label for="perfil">Perfil do usuário</label>
-            <select id="perfil" name="perfil" required>
-              <option value="">Selecione seu perfil</option>
-              <option value="Aluno / Desenvolvedor">
-                Aluno / Desenvolvedor
-              </option>
-              <option value="Professor / PO">Professor / PO</option>
-              <option value="Coordenador / Gestor do Projeto">
-                Coordenador / Gestor do Projeto
-              </option>
-            </select>
-            <small
-              >O perfil define o enfoque e o nível de detalhe do
-              relatório.</small
-            >
-          </div>
+        <!-- Campo para informar os dados do projeto -->
+        <div class="form-group">
+          <label for="dados">Dados do projeto</label>
 
-          <div class="field">
-            <label for="dados">Dados do projeto</label>
-            <textarea
-              id="dados"
-              name="dados"
-              rows="7"
-              required
-              placeholder="Ex.: objetivo do projeto, funcionalidades implementadas, tecnologias utilizadas, atividades concluídas e dificuldades encontradas..."
-            ></textarea>
-          </div>
+          <textarea
+            id="dados"
+            name="dados"
+            placeholder="Informe requisitos, tarefas, funcionalidades, andamento ou outros dados do projeto."
+            required
+          ></textarea>
+        </div>
 
-          <div class="field">
-            <label for="solicitacao">O que você deseja saber?</label>
-            <textarea
-              id="solicitacao"
-              name="solicitacao"
-              rows="3"
-              required
-              placeholder="Ex.: Gere um relatório técnico explicando a arquitetura e o estado atual do projeto."
-            ></textarea>
-          </div>
+        <!-- Campo para descrever o relatório desejado -->
+        <div class="form-group">
+          <label for="solicitacao">Solicitação do relatório</label>
 
-          <button type="submit">Gerar relatório <span>→</span></button>
-          <p class="privacy-note">
-            O relatório será gerado com base nos dados e na solicitação
-            informados.
-          </p>
-        </form>
-      </section>
+          <textarea
+            id="solicitacao"
+            name="solicitacao"
+            placeholder="Ex.: Gere um relatório técnico sobre o andamento e os principais resultados do projeto."
+            required
+          ></textarea>
+        </div>
 
-      <footer>
-        <span>Módulo 8 — Relatórios</span>
-        <span>Assistente Inteligente de Projetos</span>
-      </footer>
+        <!-- Botão que envia os dados para o servidor -->
+        <button type="submit">Gerar relatório</button>
+      </form>
     </main>
   </body>
 </html>
