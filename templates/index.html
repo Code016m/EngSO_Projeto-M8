@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Módulo 8 | Relatórios Inteligentes</title>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='style.css') }}"
+    />
+  </head>
+  <body>
+    <header class="topbar">
+      <div class="brand">
+        <div class="brand-icon">M8</div>
+        <div>
+          <h1>Relatórios Inteligentes</h1>
+          <p>Módulo de Relatórios</p>
+        </div>
+      </div>
+      <span class="status">Assistente de projetos</span>
+    </header>
+
+    <main class="container">
+      <section class="intro">
+        <span class="eyebrow">INTELIGÊNCIA ARTIFICIAL APLICADA</span>
+        <h2>Transforme dados em conhecimento.</h2>
+        <p>
+          Gere relatórios personalizados sobre seu projeto, considerando o seu
+          perfil e o objetivo da análise.
+        </p>
+      </section>
+
+      <section class="panel">
+        <div class="panel-heading">
+          <div>
+            <h3>Configurar relatório</h3>
+            <p>Preencha os dados abaixo para começar.</p>
+          </div>
+          <span class="step-label">01 / GERAÇÃO</span>
+        </div>
+
+        <form method="POST" action="/gerar">
+          <div class="field">
+            <label for="perfil">Perfil do usuário</label>
+            <select id="perfil" name="perfil" required>
+              <option value="">Selecione seu perfil</option>
+              <option value="Aluno / Desenvolvedor">
+                Aluno / Desenvolvedor
+              </option>
+              <option value="Professor / PO">Professor / PO</option>
+              <option value="Coordenador / Gestor do Projeto">
+                Coordenador / Gestor do Projeto
+              </option>
+            </select>
+            <small
+              >O perfil define o enfoque e o nível de detalhe do
+              relatório.</small
+            >
+          </div>
+
+          <div class="field">
+            <label for="dados">Dados do projeto</label>
+            <textarea
+              id="dados"
+              name="dados"
+              rows="7"
+              required
+              placeholder="Ex.: objetivo do projeto, funcionalidades implementadas, tecnologias utilizadas, atividades concluídas e dificuldades encontradas..."
+            ></textarea>
+          </div>
+
+          <div class="field">
+            <label for="solicitacao">O que você deseja saber?</label>
+            <textarea
+              id="solicitacao"
+              name="solicitacao"
+              rows="3"
+              required
+              placeholder="Ex.: Gere um relatório técnico explicando a arquitetura e o estado atual do projeto."
+            ></textarea>
+          </div>
+
+          <button type="submit">Gerar relatório <span>→</span></button>
+          <p class="privacy-note">
+            O relatório será gerado com base nos dados e na solicitação
+            informados.
+          </p>
+        </form>
+      </section>
+
+      <footer>
+        <span>Módulo 8 — Relatórios</span>
+        <span>Assistente Inteligente de Projetos</span>
+      </footer>
+    </main>
+  </body>
+</html>
