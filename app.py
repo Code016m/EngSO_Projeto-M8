@@ -41,7 +41,11 @@ def gerar_relatorio():
 
     # Verifica se a chave da API foi configurada
     if not api_key or api_key == "SUA_CHAVE_AQUI":
-        return "Configure a chave da API no arquivo .env.", 500
+      app.logger.error("A chave da API do Gemini não foi configurada.")
+      return render_template(
+        "index.html",
+        erro="O serviço de inteligência artificial não está configurado."
+      ), 500
 
     # Monta o prompt enviado para a inteligência artificial
     prompt = f"""
@@ -67,7 +71,16 @@ def gerar_relatorio():
         )
 
         # Obtém o texto gerado pela IA
-        relatorio = resposta.text or "Nenhum relatório foi gerado."
+        relatorio = resposta.text or ""
+
+        # Verifica se a IA retornou conteúdo
+        if not relatorio.strip():
+            app.logger.warning("A IA não retornou conteúdo para o relatório.")
+
+            return render_template(
+                "index.html",
+                erro="Não foi possível gerar o relatório. Tente novamente."
+            ), 502
 
         # Corrige possíveis barras invertidas nos marcadores Markdown
         relatorio = (
@@ -100,11 +113,18 @@ def gerar_relatorio():
         return render_template("resultado.html", relatorio=html_relatorio)
 
     except Exception:
-      # Registra detalhes do erro no terminal para facilitar a investigação
+      # Registra os detalhes técnicos no terminal
       app.logger.exception("Erro ao gerar relatório")
-
-      # Exibe uma mensagem genérica ao usuário
-      return ("Erro ao gerar o relatório. Verifique a API e a conexão.", 500)
+      
+      # Mostra uma mensagem amigável na página inicial
+      return render_template(
+        "index.html",
+        erro=(
+          """
+          O serviço de inteligência artificial está temporariamente indisponível. Aguarde alguns instantes e tente novamente.
+          """
+        )
+      ), 503
 
 # Inicia o servidor de desenvolvimento quando o arquivo é executado
 if __name__ == "__main__":
