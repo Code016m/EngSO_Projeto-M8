@@ -51,7 +51,7 @@ def gerar_relatorio():
         # Conecta à API e solicita a geração do relatório
         cliente = genai.Client(api_key=api_key)
         resposta = cliente.models.generate_content(
-            model="gemini-2.5-flash",
+            model="gemini-3.8-flash",
             contents=prompt
         )
 
