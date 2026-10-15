@@ -16,6 +16,7 @@
       href="{{ url_for('static', filename='style.css') }}"
     />
   </head>
+
   <body>
     <!-- Área principal do resultado -->
     <main class="container">
@@ -28,11 +29,31 @@
         <p>Relatório criado com auxílio da inteligência artificial.</p>
       </header>
 
-      <!-- Apresenta o relatório já convertido e sanitizado -->
-      <article class="report-content">{{ relatorio | safe }}</article>
+      <!-- Apresenta o relatório convertido e sanitizado pelo backend -->
+      <article class="report-content">
+        {{ relatorio | safe }}
+      </article>
 
-      <!-- Permite retornar ao formulário para gerar outro relatório -->
-      <a class="button-link" href="/"> Gerar outro relatório </a>
+      <!-- Formulário para baixar o relatório em Markdown -->
+      <form
+        method="POST"
+        action="{{ url_for('baixar_relatorio') }}"
+      >
+        <!-- Envia o conteúdo Markdown original para a rota de download -->
+        <input
+          type="hidden"
+          name="relatorio_markdown"
+          value="{{ relatorio_markdown }}"
+        />
+
+        <!-- Botão para baixar o arquivo -->
+        <button type="submit">Baixar relatório (.md)</button>
+      </form>
+
+      <!-- Permite gerar outro relatório -->
+      <a class="button-link" href="/">
+        Gerar outro relatório
+      </a>
     </main>
   </body>
 </html>

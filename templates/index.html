@@ -16,6 +16,7 @@
       href="{{ url_for('static', filename='style.css') }}"
     />
   </head>
+
   <body>
     <!-- Área principal da página -->
     <main class="container">
@@ -31,13 +32,17 @@
         </p>
       </header>
 
-      <!-- Exibe uma mensagem caso algum campo esteja vazio -->
+      <!-- Exibe mensagens de erro, caso existam -->
       {% if erro %}
       <p class="error-message" role="alert">{{ erro }}</p>
       {% endif %}
 
-      <!-- Formulário enviado para a rota /gerar -->
-      <form method="POST" action="/gerar">
+      <!-- Formulário de geração de relatórios -->
+      <form
+        method="POST"
+        action="{{ url_for('gerar_relatorio') }}"
+        enctype="multipart/form-data"
+      >
         <!-- Seleção do perfil do usuário -->
         <div class="form-group">
           <label for="perfil">Perfil do usuário</label>
@@ -45,7 +50,9 @@
           <select id="perfil" name="perfil" required>
             <option value="">Selecione seu perfil</option>
 
-            <option value="Aluno / Desenvolvedor">Aluno / Desenvolvedor</option>
+            <option value="Aluno / Desenvolvedor">
+              Aluno / Desenvolvedor
+            </option>
 
             <option value="Professor / PO">Professor / PO</option>
 
@@ -55,31 +62,66 @@
           </select>
         </div>
 
-        <!-- Campo para informar os dados do projeto -->
+        <!-- Seleção do tipo de relatório -->
+        <div class="form-group">
+          <label for="tipo_relatorio">Tipo de relatório</label>
+
+          <select id="tipo_relatorio" name="tipo_relatorio" required>
+            <option value="">Selecione o tipo de relatório</option>
+
+            <option value="tecnico">Relatório técnico</option>
+
+            <option value="arquitetura">Relatório de arquitetura</option>
+
+            <option value="progresso">Relatório de progresso</option>
+
+            <option value="estudo">Recomendações de estudo</option>
+          </select>
+        </div>
+
+        <!-- Dados digitados do projeto -->
         <div class="form-group">
           <label for="dados">Dados do projeto</label>
 
           <textarea
             id="dados"
             name="dados"
-            placeholder="Informe requisitos, tarefas, funcionalidades, andamento ou outros dados do projeto."
+            placeholder="Informe requisitos, tarefas, funcionalidades, tecnologias ou andamento do projeto."
             required
           ></textarea>
         </div>
 
-        <!-- Campo para descrever o relatório desejado -->
+        <!-- Upload de documentos do projeto -->
         <div class="form-group">
-          <label for="solicitacao">Solicitação do relatório</label>
+          <label for="arquivos">Documentos do projeto (opcional)</label>
+
+          <input
+            type="file"
+            id="arquivos"
+            name="arquivos"
+            accept=".pdf,.txt,.md"
+            multiple
+          />
+
+          <small>
+            Formatos aceitos: PDF, TXT e MD. Até 3 arquivos, com no máximo
+            5 MB cada.
+          </small>
+        </div>
+
+        <!-- Solicitação específica do usuário -->
+        <div class="form-group">
+          <label for="solicitacao">O que deseja no relatório?</label>
 
           <textarea
             id="solicitacao"
             name="solicitacao"
-            placeholder="Ex.: Gere um relatório técnico sobre o andamento e os principais resultados do projeto."
+            placeholder="Ex.: Explique as funcionalidades implementadas e recomende melhorias para o projeto."
             required
           ></textarea>
         </div>
 
-        <!-- Botão que envia os dados para o servidor -->
+        <!-- Botão para enviar os dados e gerar o relatório -->
         <button type="submit">Gerar relatório</button>
       </form>
     </main>
