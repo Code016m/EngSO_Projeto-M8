@@ -36,28 +36,69 @@ def gerar_relatorio():
         erro="Preencha todos os campos antes de gerar o relatório."
       ), 400
 
+    # Define as instruções específicas de cada perfil
+    instrucoes_perfil = {
+      "Aluno / Desenvolvedor": """
+        Priorize os aspectos técnicos do projeto.
+        Explique funcionalidades, implementação e decisões técnicas.
+        Identifique dificuldades ou lacunas presentes nos dados.
+        Sugira assuntos para estudo relacionados ao projeto.
+        Utilize uma linguagem didática e acessível.
+      """,
+
+      "Professor / PO": """
+        Priorize o acompanhamento e a avaliação do projeto.
+        Organize requisitos, funcionalidades, entregas e progresso informado.
+        Destaque pendências e critérios de aceitação relevantes.
+        Aponte itens que precisam de validação ou acompanhamento.
+        Utilize uma linguagem objetiva e profissional.
+      """,
+
+      "Coordenador / Gestor do Projeto": """
+        Priorize a visão geral da evolução do projeto.
+        Consolide resultados, atividades e situação das entregas informadas.
+        Identifique riscos, dependências e possíveis atrasos somente quando houver evidências nos dados fornecidos.
+        Apresente prioridades e recomendações para apoiar decisões.
+        Utilize uma linguagem executiva, clara e objetiva.
+      """,
+    }
+
+    # Verifica se o perfil selecionado é válido
+    if perfil not in instrucoes_perfil:
+      return render_template(
+        "index.html", erro="Selecione um perfil de usuário válido."
+      ), 400
+
     # Obtém a chave da API do Gemini configurada no arquivo .env
     api_key = os.getenv("GEMINI_API_KEY")
 
     # Verifica se a chave da API foi configurada
     if not api_key or api_key == "SUA_CHAVE_AQUI":
       app.logger.error("A chave da API do Gemini não foi configurada.")
+
       return render_template(
         "index.html",
         erro="O serviço de inteligência artificial não está configurado."
       ), 500
 
-    # Monta o prompt enviado para a inteligência artificial
+    # Monta as instruções completas enviadas à inteligência artificial
     prompt = f"""
-    Gere um relatório em português brasileiro sobre Engenharia de Software.
-    Adapte o relatório ao perfil do usuário.
-    Utilize somente as informações fornecidas, sem inventar dados.
-    Organize o conteúdo usando títulos, subtítulos, listas e negrito em Markdown.
-    Não utilize barras invertidas para escapar os símbolos de formatação.
+      Você é um assistente de Engenharia de Software que gera relatórios
+      a partir dos dados de um projeto.
 
-    Perfil do usuário: {perfil}
-    Dados do projeto: {dados}
-    Solicitação: {solicitacao}
+      REGRAS GERAIS:
+      - Escreva em português brasileiro.
+      - Utilize somente informações fornecidas pelo usuário.
+      - Não invente atividades, resultados, datas, métricas ou riscos.
+      - Quando faltarem informações, indique que não foram fornecidas.
+      - Adapte o conteúdo ao perfil selecionado.
+      - Organize o relatório com títulos, subtítulos e listas em Markdown.
+      - Atenda também à solicitação específica do usuário.
+      
+      PERFIL DO USUÁRIO: {perfil}
+      INSTRUÇÕES ESPECÍFICAS DO PERFIL: {instrucoes_perfil[perfil]}
+      DADOS DO PROJETO: {dados}
+      SOLICITAÇÃO DO USUÁRIO: {solicitacao}
     """
 
     try:
@@ -73,14 +114,13 @@ def gerar_relatorio():
         # Obtém o texto gerado pela IA
         relatorio = resposta.text or ""
 
-        # Verifica se a IA retornou conteúdo
+        # Verifica se a IA retornou algum conteúdo
         if not relatorio.strip():
-            app.logger.warning("A IA não retornou conteúdo para o relatório.")
-
-            return render_template(
-                "index.html",
-                erro="Não foi possível gerar o relatório. Tente novamente."
-            ), 502
+          app.logger.warning("A IA não retornou conteúdo para o relatório.")
+          return render_template(
+            "index.html",
+            erro="Não foi possível gerar o relatório. Tente novamente."
+          ), 502
 
         # Corrige possíveis barras invertidas nos marcadores Markdown
         relatorio = (
@@ -97,7 +137,7 @@ def gerar_relatorio():
         )
 
         # Permite somente as tags HTML necessárias para o relatório
-        # Isso reduz o risco de inserir conteúdo HTML perigoso na página
+        # Limita a exibição de conteúdo potencialmente malicioso
         html_relatorio = bleach.clean(
             html_relatorio,
             tags=[
@@ -113,19 +153,17 @@ def gerar_relatorio():
         return render_template("resultado.html", relatorio=html_relatorio)
 
     except Exception:
-      # Registra os detalhes técnicos no terminal
+      # Registra detalhes técnicos do erro no terminal
       app.logger.exception("Erro ao gerar relatório")
-      
-      # Mostra uma mensagem amigável na página inicial
+      # Exibe uma mensagem amigável caso a IA esteja indisponível
       return render_template(
         "index.html",
         erro=(
-          """
-          O serviço de inteligência artificial está temporariamente indisponível. Aguarde alguns instantes e tente novamente.
-          """
+          "Não foi possível gerar o relatório neste momento. "
+          "Verifique a conexão e tente novamente."
         )
       ), 503
 
-# Inicia o servidor de desenvolvimento quando o arquivo é executado
+# Inicia o servidor de desenvolvimento
 if __name__ == "__main__":
     app.run(debug=True)
