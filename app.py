@@ -1,3 +1,4 @@
+
 import os
 from io import BytesIO
 
@@ -248,7 +249,7 @@ def gerar_relatorio():
         CONTEÚDO DOS ARQUIVOS: {conteudo_arquivos}
 
         SOLICITAÇÃO DO USUÁRIO: {solicitacao}
-"""
+    """
 
     try:
         # Inicializa o cliente e solicita a geração do relatório
