@@ -1,0 +1,18 @@
+# Ambiente virtual e arquivos temporários
+.venv/
+venv/
+__pycache__/
+*.pyc
+
+# Arquivos do Git
+.git/
+.github/
+
+# Cache de testes
+.pytest_cache/
+
+# Segredos locais: configurar separadamente na hospedagem
+.env
+
+# Arquivos do sistema
+.DS_Store
